@@ -1,0 +1,43 @@
+// Definições dos pinos
+#define POT  A0 // Pino do potenciômetro
+#define EN1  3  // Pino PWM para controle do motor
+#define M1A  4  // Pino de direção do motor
+#define M1B  7  // Pino de direção do motor
+
+// Variáveis para controle do motor
+int pos = 0;
+int motorPower = 0;
+boolean backwards = false;
+
+void setup() {
+  // Configuração dos pinos como saídas
+  pinMode(EN1, OUTPUT);
+  pinMode(M1A, OUTPUT);
+  pinMode(M1B, OUTPUT);
+}
+
+void loop(){
+  // Leitura do valor do potenciômetro
+  pos = analogRead(POT);
+  
+  // Determinação da direção e potência do motor
+  if(pos >= 512) {
+    backwards = false;
+    motorPower = (pos - 512) / 2;
+  } else {
+    backwards = true;
+    motorPower = (511 - pos) / 2;
+  }
+  
+  // Definição da direção do motor
+  if(backwards) {
+    digitalWrite(M1A, HIGH);
+    digitalWrite(M1B, LOW);
+  } else {
+    digitalWrite(M1A, LOW);
+    digitalWrite(M1B, HIGH);
+  }
+
+  // Controle do motor com PWM
+  analogWrite(EN1, motorPower);
+}
